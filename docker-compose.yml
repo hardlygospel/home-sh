@@ -1,0 +1,55 @@
+version: "3.9"
+
+services:
+  home-ssh:
+    build: .
+    ports:
+      - "2222:2222"
+    environment:
+      HOME_SSH_PORT: "2222"
+      HOME_DB_HOST: postgres
+      HOME_DB_USER: homeuser
+      HOME_DB_PASSWORD: homepass
+      HOME_DB_NAME: homedb
+      HOME_DB_PORT: "5432"
+      HOME_ICECAST_URL: "http://icecast:8000"
+      HOME_LIQUIDSOAP_URL: "http://liquidsoap:8001"
+      RUST_LOG: "info,home_ssh=debug"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: homeuser
+      POSTGRES_PASSWORD: homepass
+      POSTGRES_DB: homedb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U homeuser -d homedb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  icecast:
+    build: ./infra/icecast
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+  liquidsoap:
+    image: savonet/liquidsoap:v2.2.5
+    volumes:
+      - ./infra/liquidsoap/radio.liq:/etc/liquidsoap/radio.liq:ro
+      - ./infra/liquidsoap/music:/music:ro
+    command: /etc/liquidsoap/radio.liq
+    depends_on:
+      - icecast
+    restart: unless-stopped
+
+volumes:
+  pgdata:
