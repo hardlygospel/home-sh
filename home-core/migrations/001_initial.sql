@@ -33,16 +33,8 @@ CREATE TABLE IF NOT EXISTS home_cat_trees (
     growth_points INT NOT NULL DEFAULT 0,
     last_cared_at TIMESTAMPTZ,
     seed BIGINT NOT NULL DEFAULT 0,
-    is_alive BOOLEAN NOT NULL DEFAULT true,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
-CREATE TABLE IF NOT EXISTS home_cat_graveyard (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID NOT NULL REFERENCES home_users(id),
-    survived_days INT NOT NULL DEFAULT 0,
-    died_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 INSERT INTO home_chat_rooms (name, description) VALUES

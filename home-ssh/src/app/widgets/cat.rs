@@ -110,28 +110,6 @@ pub fn draw(f: &mut Frame, app: &mut App, theme: &Theme, area: Rect) {
         }
     };
 
-    if !cat.is_alive {
-        let para = Paragraph::new(vec![
-            Line::from(Span::raw("")),
-            Line::from(Span::styled(
-                "  RIP kitty...  ",
-                Style::default().fg(theme.error).add_modifier(Modifier::BOLD),
-            )),
-            Line::from(Span::styled(
-                "  (neglected)  ",
-                Style::default().fg(theme.dim),
-            )),
-            Line::from(Span::raw("")),
-            Line::from(Span::styled(
-                "  [f]eed to start",
-                Style::default().fg(theme.dim),
-            )),
-        ])
-        .style(Style::default().bg(theme.bg));
-        f.render_widget(para, inner);
-        return;
-    }
-
     let stage = cat.stage() as usize;
     let mood = cat.mood();
     let stage_art = CAT_STAGES[stage.min(CAT_STAGES.len() - 1)];

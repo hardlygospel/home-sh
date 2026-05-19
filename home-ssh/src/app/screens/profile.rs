@@ -80,11 +80,10 @@ pub fn draw(f: &mut Frame, app: &mut App, theme: &Theme, area: Rect) {
     if let Some(cat) = &app.app_state.cat {
         let stage = cat.stage();
         let mood = cat.mood();
-        let alive = if cat.is_alive { "alive" } else { "died" };
         lines.push(Line::from(vec![
             Span::styled(" Cat: ", Style::default().fg(theme.dim)),
             Span::styled(
-                format!("stage {} ({}) — {} — {} growth pts", stage, alive, mood.as_str(), cat.growth_points),
+                format!("stage {} — {} — {} growth pts", stage, mood.as_str(), cat.growth_points),
                 Style::default().fg(theme.secondary),
             ),
         ]));
